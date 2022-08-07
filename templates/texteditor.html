@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/Xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>{{name}}</title>
+    <link rel="shortcut icon" href="./static/images/code21_favicon.ico" />
+    <link rel="stylesheet" href="./static/css/header6.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        form {
+            width: 100vw;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(51,63,80,1);
+        }
+        #btnbox {
+            width: 100vw;
+            height: 5vh;
+            text-align: right;
+        }
+        #savebtn {
+            box-sizing: border-box;
+            width: 5vh;
+            height: 5vh;
+            padding: 1vh 1vh 1vh 1vh;
+        }
+        #savebtn:focus {
+            outline: none;
+        }
+        #container {
+            width: 100vw;
+            height: 80vh;
+            box-sizing: border-box;
+            margin: 0 0 0 0;
+            text-align: center;
+            display: flex;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+        #numberbox {
+            width: 5%;
+            height: 100%;
+            display: inline-block;
+        }
+        #number {
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            padding: 10px 0 10px 0;
+            border: 0;
+            font-family: monospace;
+            font-weight: bold;
+            text-align: right;
+            color: rgba(117,135,159,1);
+            resize: none;
+            background-color: rgba(0,0,0,0);
+            overflow: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        #number:focus {
+            outline: none;
+        }
+        #number::-webkit-scrollbar {
+            display: none;
+        }
+        #textbox {
+            width: 95%;
+            height: 100%;
+            box-sizing: border-box;
+            border-left: 1px solid black;
+            display: inline-block;
+        }
+        #text {
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            padding: 10px 0 10px 10px;
+            border: 0;
+            font-family: monospace;
+            color: white;
+            resize: none;
+            background-color: rgba(34,42,53,1);
+        }
+        #text:focus {
+            outline: none;
+        }
+        #info {
+            width: 100vw;
+            height: 5vh;
+            text-align: right;
+            background-color: rgba(41,53,70,1);
+        }
+        #lnNcolN {
+            width: 16vw;
+            height: 100%;
+            padding: 0 0 0 10px;
+            line-height: 5vh;
+            display: inline-block;
+            font-size: 15px;
+            border-left: 1px solid black;
+            text-align: left;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div id="logobox">
+            <a href="./"><img id="logotype" src="./static/images/code21_logotype.png" /></a>
+        </div>
+        <ul id="menu">
+            <li class="menucontent">
+                <a class="menuname" href="./texteditor?filename=user data">User Data</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./texteditor?filename=final save">Final Save</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" id="record status" href="./status?index=0">Record Status</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./texteditor?filename=subject data">Subject Data</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./texteditor?filename=time table data">Time table</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./file">File Management</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./ball">Ball</a>
+            </li>
+        </ul>
+    </div>
+    <form action="./filesave" method="POST" target="_blank">
+        <div id="btnbox">
+            <input type="image" src="./static/images/download_icon.png" id="savebtn">
+        </div>
+        <div id="container">
+            <div id="numberbox">
+                <textarea id="number" wrap="off" readonly disabled></textarea>
+            </div>
+            <div id="textbox">
+                <textarea id="text" name="content" wrap="off">{% for line in data %}{{line}}{% endfor %}</textarea>
+            </div>
+        </div>
+    </form>
+    <div id="info">
+        <span id="lnNcolN">Ln 1, Col 1</span>
+    </div>
+    <script>
+        var menulist = ["user data", "final save", "record status", "subject data", "timetable", "file management", "ball"];
+        var menuname = {{name|tojson}};
+        var i = menulist.indexOf(menuname);
+        document.getElementById(menulist[i]).className += ' activedmenu';
+        if (i > 0) {
+            document.getElementById(menulist[i - 1]).className += ' leftmenu';
+            document.getElementById(menulist[i - 1]).parentNode.className += ' sidecontent';
+        }
+        document.getElementById(menulist[i + 1]).className += ' rightmenu';
+        document.getElementById(menulist[i + 1]).parentNode.className += ' sidecontent';
+        $("#number").on('scroll touchmove mousewheel', function (event) {
+            event.preventDefault();
+        });
+        var text = $("#text").val();
+        var linenum = (text.match(/\n/g) || []).length + 1;
+        for (var i = 1; i < linenum; i++) {
+            $("#number").val($("#number").val() + String(i) + " \n");
+        }
+        $("#number").val($("#number").val() + String(i) + ' ');
+        $("#text").on("propertychange change keyup keydown select click paste input", function () {
+            text = $(this).val();
+            linenum = (text.match(/\n/g) || []).length + 1;
+            $("#number").val("");
+            for (var i = 1; i < linenum; i++) {
+                $("#number").val($("#number").val() + String(i) + " \n");
+            }
+            $("#number").val($("#number").val() + String(i) + ' ');
+            var col = document.getElementById("text").selectionEnd;
+            var lines = text.split('\n');
+            var ln;
+            for (ln = 0; ln <= lines.length; ln++) {
+                if (col - lines[ln].length - 1< 0) break;
+                col -= lines[ln].length + 1;
+            }
+            col += 1;
+            document.getElementById("lnNcolN").innerText = "Ln " + String(ln + 1) + ", Col " + String(col);
+        });
+        $("#text").scroll(function () {
+            var height = $("#text").scrollTop();
+            $("#number").scrollTop(height);
+        });
+    </script>
+</body>
+</html>

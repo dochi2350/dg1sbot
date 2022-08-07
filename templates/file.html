@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/Xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>file management</title>
+    <link rel="shortcut icon" href="./static/images/code21_favicon.ico" />
+    <link rel="stylesheet" href="./static/css/header6.css" />
+    <style>
+        #contentbox {
+            width: 100vw;
+            height: 90vh;
+            background-color: rgba(51,63,80,1);
+        }
+        form {
+            width: 50vw;
+            height: 100%;
+            float: left;
+        }
+        #borderbox {
+            width: 50vw;
+            height: 85vh;
+            box-sizing: border-box;
+            margin: 2.5vh 0 2.5vh 0;
+            padding: 26vh 0 26vh 0;
+            border-right: 2px solid rgba(117,135,159,1);
+            text-align: center;
+        }
+        #uploadformbox {
+            width: 39vw;
+            box-sizing: border-box;
+            margin: 0 5.5vw 0 5.5vw;
+            padding: 2vh 2vh 2vh 2vh;
+            text-align: center;
+            background-color: white;
+            border-radius: 1vw;
+        }
+        #uploadimg {
+            width: 15vh;
+            height: 15vh;
+        }
+        #uploadimg:hover {
+            cursor: pointer;
+        }
+        #uploadfile {
+            display: none;
+        }
+        #uploadfilename {
+            height: 5vh;
+            line-height: 5vh;
+            color: rgba(51,63,80,1);
+            margin: 2vh 0 2vh 0;
+            font-size: 15px;
+        }
+        #uploadfilename:hover {
+            cursor: default;
+        }
+        #uploadbtn {
+            width: 16vw;
+            height: 5vh;
+            box-sizing: border-box;
+            background-color: rgba(51,63,80,1);
+            color: white;
+            border: none;
+            border-radius: 1vw;
+            font-size: 15px;
+            outline: none;
+        }
+        #uploadbtn:hover {
+            cursor: pointer;
+            background-color: rgba(34,42,53,1);
+        }
+        #downloadformbox {
+            width: 39vw;
+            margin: 26vh 5.5vw 26vh 5.5vw;
+            text-align: center;
+        }
+        #downloadbox {
+            width: 39vw;
+            height: 5vh;
+            box-sizing: border-box;
+            background-color: white;
+            border-radius: 1vw;
+        }
+        #downloadfilename {
+            width: 25vw;
+            height: 5vh;
+            margin: 0 0 0 1vw;
+            box-sizing: border-box;
+            float: left;
+            border: none;
+            border-radius: 1vw;
+            background-color: white;
+            outline: none;
+        }
+        #downloadbtn {
+            width: 13vw;
+            height: 3vh;
+            margin: 1vh 0 1vh 0;
+            box-sizing: border-box;
+            float: left;
+            border: none;
+            border-radius: 0 1vw 1vw 0;
+            border-left: 2px solid rgba(51,63,80,1);
+            color: rgba(51,63,80,1);
+            font-size: 15px;
+            font-weight: bold;
+            background-color: white;
+            outline: none;
+        }
+        #downloadbtn:hover {
+            cursor: pointer;
+            color: black;
+        }
+        #listtitle {
+            width: 19.5vw;
+            height: 5vh;
+            box-sizing: border-box;
+            display: inline-block;
+            margin: 2vh 0 2vh 0;
+            border-bottom: 1px solid white;
+            line-height: 5vh;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        #filelist {
+            width: 39vw;
+            height: 24vh;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .file {
+            width: 39vw;
+            height: 3vh;
+        }
+        .filename {
+            height: 3vh;
+            display: inline-block;
+            line-height: 3vh;
+            color: white;
+            font-size: 15px;
+        }
+        .filename:hover {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function rename(file){
+            if(file.value=="") document.getElementById("uploadfilename").innerHTML="No file selected";
+            else document.getElementById("uploadfilename").innerHTML=file.value.substr(12,file.value.length);
+        }
+        function chksubmit() {
+            if(document.getElementById("uploadfile").value==""){
+                alert("warning : Please select a file first!");
+                return false;
+            }
+        }
+        function chkdownload(){
+            if(document.getElementById("downloadfilename").value==""){
+                alert("warning : Please enter the name first!");
+                return false;
+            }
+            var files = {{files|tojson}}, i;
+            for(i=0; i<files.length; i++){
+                if(files[i]==document.getElementById("downloadfilename").value) break;
+            }
+            if(i==files.length){
+                alert("warning : No file with that name exists!");
+                return false;
+            }
+        }
+        function fillname(filename){
+            document.getElementById("downloadfilename").value=filename.innerText;   
+        }
+    </script>
+</head>
+<body>
+    <div id="header">
+        <div id="logobox">
+            <a href="./" id="logolink"><img id="logotype" src="./static/images/code21_logotype.png" /></a>
+        </div>
+        <ul id="menu">
+            <li class="menucontent">
+                <a class="menuname" href="./texteditor?filename=user data">User Data</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./texteditor?filename=final save">Final Save</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" id="record status" href="./status?index=0">Record Status</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./texteditor?filename=subject data">Subject Data</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./texteditor?filename=time table data">Time table</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./file">File Management</a>
+            </li>
+            <li class="menucontent">
+                <a class="menuname" href="./ball">Ball</a>
+            </li>
+        </ul>
+    </div>
+    <div id="contentbox">
+        <form method="POST" action="./xlsave" target="_blank" enctype="multipart/form-data" onsubmit="return chksubmit();">
+            <div id="borderbox">
+                <div id="uploadformbox">
+                    <img src="./static/images/upload_icon2.png" id="uploadimg" onclick="document.getElementById('uploadfile').click();">
+                    <p id="uploadfilename">No file selected</p>
+                    <input type="file" id="uploadfile" onchange="rename(this);" name="xlfile">
+                    <input type="submit" value="Upload" id="uploadbtn">
+                </div>
+            </div>
+        </form>
+        <form method="POST" action="./dnldfile" target="_blank" onsubmit="return chkdownload();">
+            <div id="downloadformbox">
+                <div id="downloadbox">
+                    <input type="text" id="downloadfilename" name="downloadfilename" Placeholder="Click the filename below">
+                    <input type="submit" value="Download" id="downloadbtn">
+                </div>
+                <span id="listtitle">File List</span>
+                <ul id="filelist">
+                    {% for file in files %}
+                    <li class="file">
+                        <span class="filename" onclick="fillname(this);">{{file}}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById("file management").className += ' activedmenu';
+        document.getElementById("timetable").className += ' leftmenu';
+        document.getElementById("timetable").parentNode.className += ' sidecontent';
+        document.getElementById("ball").className += ' rightmenu';
+        document.getElementById("ball").parentNode.className += ' sidecontent';
+    </script>
+</body>
+</html>
